@@ -42,33 +42,33 @@
     soFileName:` sv .b64.cfg.soName,`so;
 
     if[soFileName in .file.ls customSoPath;
-        .log.info "Shared object found in root of custom folder path [ Path: ",string[customSoPath]," ]";
+        .log.if.info "Shared object found in root of custom folder path [ Path: ",string[customSoPath]," ]";
         :` sv customSoPath,.b64.cfg.soName;
     ];
 
     if[(`x86 = .util.getProcessArchitecture[]) & `lib in .file.ls customSoPath;
-        .log.info "32-bit shared object found in 'lib' folder [ Path: ",string[customSoPath]," ]";
+        .log.if.info "32-bit shared object found in 'lib' folder [ Path: ",string[customSoPath]," ]";
         :` sv customSoPath,`lib,.b64.cfg.soName;
     ];
 
     if[(`x86_64 = .util.getProcessArchitecture[]) & `lib64 in .file.ls customSoPath;
-        .log.info "64-bit shared object found in 'lib64' folder [ Path: ",string[customSoPath]," ]";
+        .log.if.info "64-bit shared object found in 'lib64' folder [ Path: ",string[customSoPath]," ]";
         :` sv customSoPath,`lib64,.b64.cfg.soName;
     ];
 
-    .log.error "Shared object could not be found within the custom folder path specified [ Path: ",string[customSoPath]," ]";
+    .log.if.error "Shared object could not be found within the custom folder path specified [ Path: ",string[customSoPath]," ]";
     '"MissingSharedObjectException";
  };
 
 / Loads and maps the native functions available in the shared object to kdb functions
 / @see .b64.cfg.nativeFunctionMap
 .b64.i.loadNativeFunctions:{
-    .log.info "Loading native functions [ Shared Object: ",string[.b64.soPath]," ] [ Native Functions: ",string[count .b64.cfg.nativeFunctionMap]," ]";
+    .log.if.info "Loading native functions [ Shared Object: ",string[.b64.soPath]," ] [ Native Functions: ",string[count .b64.cfg.nativeFunctionMap]," ]";
 
     {[kdbFunc]
         soFunc:.b64.cfg.nativeFunctionMap kdbFunc;
 
-        .log.debug "Loading native function [ kdb: ",string[kdbFunc]," ] [ Native: ",.Q.s1[soFunc]," ]";
+        .log.if.debug "Loading native function [ kdb: ",string[kdbFunc]," ] [ Native: ",.Q.s1[soFunc]," ]";
 
         set[kdbFunc; .b64.soPath 2: value soFunc];
     } each exec kdbFunc from .b64.cfg.nativeFunctionMap;
