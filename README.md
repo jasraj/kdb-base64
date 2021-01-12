@@ -20,18 +20,3 @@ The 2 functions provided by this library are:
 
 Both functions expect a string (`10h`) argument and will return a string.
 
-## Encoder Performance Comparison
-
-There is a slight performance improvement with `.b64.encode` vs the built-in `.Q.btoa`:
-
-```q
-/ Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz
-
-q) encStr:500?.Q.an
-
-q) \ts do[10000; .Q.btoa encStr]
-39 1408
-
-q) \ts do[10000; .b64.encode encStr]
-34 1376
-```
